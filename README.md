@@ -1,10 +1,19 @@
-# Meme
+# Meme v.2
 
-Contributors: Yuri Victor, Joshua Benton, Matt Montgomery, Ivar Vong, Steve Peters, Flip Stewart
+Contributors: Yuri Victor, Joshua Benton, Matt Montgomery, Ivar Vong, Steve Peters, Flip Stewart, Greg MacWilliam.
 
-Meme is a generator that Vox Media uses to create social sharing images.
+Meme is a generator that Vox Media uses to create social sharing images. See working version at [http://www.sbnation.com/a/meme](http://www.sbnation.com/a/meme).
 
-![screenshot](https://raw.githubusercontent.com/yurivictor/meme/master/source/images/screenshot.png)
+![screenshot](readme.png)
+
+## What's new in version 2.0?
+
+* Refactored into a formal MV* app.
+* Fixed bugs with rendering state and repeat drag-n-drop images.
+* Improved initial rendering with loaded web fonts.
+* Improved cross-origin options: both for base64 images and CORS.
+* Highly (and easily!) customizable editor and theme options.
+* Watermark selector.
 
 ## Install
 
@@ -14,29 +23,36 @@ Meme is a generator that Vox Media uses to create social sharing images.
 
 This will start a local web server running at: `http://localhost:4567/`
 
+## Customization
+
+### Configuration
+
+Settings and controls are configured through `source/javascripts/settings.js.erb`. The [settings file](https://github.com/voxmedia/meme/blob/master/source/javascripts/settings.js.erb) has ample comments to document configuration.
+
+### Fonts
+
+Include your own fonts in `stylesheets/_fonts.scss`, then add your font options into the [settings file](https://github.com/voxmedia/meme/blob/master/source/javascripts/settings.js.erb#L12).
+
+### Editor theme
+
+Set the [theme-color variable](https://github.com/voxmedia/meme/blob/master/source/stylesheets/_vars.scss#L3) in `source/stylesheets/_vars.scss`. That one color will be tinted across all editor controls.
+
+## Cross-Origin Resources (CORS)
+
+This is an HTML5 Canvas-based application, and thus comes with some security restrictions when loading graphics across domains (ex: a canvas element on *http://tatooine.com* cannot export with an image hosted on *http://dagobah.com*).
+
+If you're hosting this application on the same domain that serves your images, then congratulations! You have no problems. However, if you're going through a CDN, then you'll probably encounter some cross-domain security issues; at which time you have two options:
+
+1. Follow this [excellent MDN article](https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image) about configuring "Access-Control-Allow-Origin" headers. You'll need to enable these headers on your CDN, at which time the Meme app should be able to request images from it.
+
+2. Embed all of your watermark images as base64 data URIs within the `settings.js.erb` file. The asset pipeline's `asset_data_uri` helper method makes this very easy, and effectively embeds all image data within your JavaScript. The downside here is that your JavaScript will become a very large payload as you include more images. In the long term, getting CORS headers configured will be a better option.
+
 ## Examples
 
+* http://www.sbnation.com/a/meme
 * https://twitter.com/voxdotcom/status/481671889094340608
 * https://twitter.com/voxdotcom/status/479228288221470721
 * https://twitter.com/voxdotcom/status/481619042545844225
-
-## Design decisions
-
-Images are base64 and javascript is inline because of some strange canvas constructs which don't allow external data sources which can happen when using CDNs or other stuff.
-
-I chose middleman because there are great sensible defaults, but there's no reason this couldn't be a single page html file.
-
-## Extras
-
-### Add fonts
-
-Include your own fonts in `stylesheets/_fonts.scss`
-
-Fonts are handled with sizes as variables in the javascript and can be [added here](https://github.com/voxmedia/meme/blob/master/source/partials/_javascripts.html.erb#L8)
-
-### Add watermark
-
-Convert an svg to base64 and [add here](https://github.com/voxmedia/meme/blob/master/source/partials/_javascripts.html.erb#L8)
 
 ## Contributing
 
@@ -45,19 +61,3 @@ Convert an svg to base64 and [add here](https://github.com/voxmedia/meme/blob/ma
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
-
-## License
-
-Copyright (c) 2014 Vox Media Inc., Yuri Victor
-
-BSD license
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
